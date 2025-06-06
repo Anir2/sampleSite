@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Bootstrap demo</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+        <link rel="stylesheet" href="./assets/css/style.css">
+        <style>
+            #hiddenDatePicker { position: absolute; opacity: 0.01; width: 40px; height: 40px; z-index: 999;
+                                top: 50%; left: 50%; transform: translate(-50%, -50%);}
+            @keyframes shake {
+                0% { transform: translateX(0); } 25% { transform: translateX(-6px); } 50% { transform: translateX(6px); }
+                75% { transform: translateX(-4px); } 100% { transform: translateX(0); }
+            }
+            .shake { animation: shake 0.3s ease;}
+            .time.selected {background-color: #198754 !important; color: #fff; border-color: #198754;}
+        </style>
+    </head>
+    <body>
+        <footer>
+            <!-- Modal Trigger Button -->
+            <div class="d-flex justify-content-center align-items-center vh-100">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bookingModal">
+                    Book Appointment
+                </button>
+            </div>
+            
+            <!-- Booking Modal -->
+            <div class="modal fade" id="bookingModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content overflow-hidden bg-">
+                        <div class="progress w-100 rounded-bottom-circle" style="height: 4px; margin-bottom: 0;">
+                            <div class="progress-bar bg-500" id="progressBar" style="width: 25%;"></div>
+                        </div>
+                        <div class="modal-header rounded-5 shadow">
+                            <h5 id="appHeadTitle" class="modal-title "></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body px-0">                    
+                            <!-- Step 1: Personal Info -->
+                            <div class="step px-3" id="step-1">
+                                <h5 class="mb-0">Contact Information</h5>
+                                <p class="small fst-italic txt-700"><b>Note:</b> All fields are mandatory</p>
+                                <div class="d-flex flex-wrap justify-content-between gap-3">
+                                    <div class="col-12 form-floating">
+                                        <input type="text" id="firstName" class="form-control" placeholder="First Name" required>
+                                        <label for="floatingInput">First Name <i class="text-muted small">(Required)</i></label>
+                                    </div>
+                                    <div class="col-12 form-floating">
+                                        <input type="text" id="lastName" class="form-control" placeholder="Last Name" required>
+                                        <label for="floatingInput">Last Name <i class="text-muted small">(Required)</i></label>
+                                    </div>
+                                    <div class="col-12 form-floating">
+                                        <input type="tel" id="phone" class="form-control" placeholder="Phone Number" required>
+                                        <label for="floatingInput">Phone Number <i class="text-muted small">(Required)</i></label>
+                                    </div>
+                                    <div class="col-12 form-floating">
+                                        <input type="email" id="email" class="form-control" placeholder="Email" required>
+                                        <label for="floatingInput">Email address <i class="text-muted small">(Required)</i></label>
+                                    </div>
+                                </div>
+                            </div>
+                    
+                            <!-- Step 2: Service + Parking -->
+                            <div class="step px-3 d-none" id="step-2">
+                                <label class="form-label mb-2">Select a Service:</label>
+                                <div class="d-flex flex-column gap-2">
+                                    <!-- Service: Acupuncture -->
+                                    <div class="d-flex align-items-center service-option p-2 m-1 gap-3 bg-50 rounded-3 border" onclick="selectServiceRadio(this, 'acupuncture')">
+                                        <input class="form-check-input d-none" type="radio" name="service" id="acupuncture" value="Acupuncture">
+                                        <div class="col overflow-hidden rounded-3">
+                                            <img src="./assets/medias/acupuncture_service.jpg" alt="Acupuncture session" class="img-fluid">
+                                        </div>
+                                        <label class="col-8 form-check-label txt-950" for="acupuncture">Acupuncture</label>
+                                    </div>
+
+                                    <!-- Service: Registered Massage Therapy -->
+                                    <div class="d-flex align-items-center service-option p-2 m-1 gap-3 bg-50 rounded-3 border" onclick="selectServiceRadio(this, 'massage')">
+                                        <input class="form-check-input d-none" type="radio" name="service" id="massage" value="Registered Massage Therapy">
+                                        <div class="col overflow-hidden rounded-3">
+                                            <img src="./assets/medias/registered-massage-therapy.jpg" alt="Registered Massage Therapy" class="img-fluid">
+                                        </div>
+                                        <label class="col-8 form-check-label txt-950" for="massage">Registered Massage Therapy</label>
+                                    </div>
+
+                                    <!-- Service: Herbal Medicine -->
+                                    <div class="d-flex align-items-center service-option p-2 m-1 gap-3 bg-50 rounded-3 border" onclick="selectServiceRadio(this, 'herbal')">
+                                        <input class="form-check-input d-none" type="radio" name="service" id="herbal" value="Herbal Medicine">
+                                        <div class="col overflow-hidden rounded-3">
+                                            <img src="./assets/medias/herbal-medicine.jpg" alt="Herbal Medicine" class="img-fluid">
+                                        </div>
+                                        <label class="col-8 form-check-label txt-950" for="herbal">Herbal Medicine</label>
+                                    </div>
+                                </div>
+                                <hr>
+                                <label class="form-label mt-3 mb-2">Select Duration:</label>
+                                <div class="d-flex flex-wrap gap-2 justify-content-center" id="durationOptions">
+                                    <div class="p-3 duration-option bg-50 rounded-3 border txt-950 text-center" onclick="selectDurationRadio(this, 'duration30')">
+                                        <input class="form-check-input d-none" type="radio" name="duration" id="duration30" value="30">
+                                        <label class="form-check-label w-100" for="duration30"><small>30<br>Minutes</small></label>
+                                    </div>
+                                    <div class="p-3 duration-option bg-50 rounded-3 border txt-950 text-center" onclick="selectDurationRadio(this, 'duration60')">
+                                        <input class="form-check-input d-none" type="radio" name="duration" id="duration60" value="60">
+                                        <label class="form-check-label w-100" for="duration60"><small>60<br>Minutes</small></label>
+                                    </div>
+                                    <div class="p-3 duration-option bg-50 rounded-3 border txt-950 text-center" onclick="selectDurationRadio(this, 'duration90')">
+                                        <input class="form-check-input d-none" type="radio" name="duration" id="duration90" value="90">
+                                        <label class="form-check-label w-100" for="duration90"><small>90<br>Minutes</small></label>
+                                    </div>
+                                    <div class="p-3 duration-option bg-50 rounded-3 border txt-950 text-center" onclick="selectDurationRadio(this, 'duration120')">
+                                        <input class="form-check-input d-none" type="radio" name="duration" id="duration120" value="120">
+                                        <label class="form-check-label w-100" for="duration120"><small>120<br>Minutes</small></label>
+                                    </div>
+                                    <div class="p-3 duration-option bg-50 rounded-3 border txt-950 text-center" onclick="selectDurationRadio(this, 'duration150')">
+                                        <input class="form-check-input d-none" type="radio" name="duration" id="duration150" value="150">
+                                        <label class="form-check-label w-100" for="duration150"><small>150<br>Minutes</small></label>
+                                    </div>
+                                </div>
+                                  
+                                <hr>
+                                <label class="form-label mt-3">Parking Required?</label>
+
+                                <!-- Parking: Yes -->
+                                <div class="d-flex align-items-center parking-option p-2 m-1 gap-3 bg-50 rounded-3 border" onclick="selectParkingRadio(this, 'parkingYes')">
+                                    <input class="form-check-input" type="radio" name="parking" id="parkingYes" value="Yes">
+                                    <label class="form-check-label txt-950 mb-0" for="parkingYes">Yes, I need parking</label>
+                                </div>
+
+                                <!-- Parking: No -->
+                                <div class="d-flex align-items-center parking-option p-2 m-1 gap-3 bg-50 rounded-3 border" onclick="selectParkingRadio(this, 'parkingNo')">
+                                    <input class="form-check-input" type="radio" name="parking" id="parkingNo" value="No">
+                                    <label class="form-check-label txt-950 mb-0" for="parkingNo">No, I don’t need parking</label>
+                                </div>
+                            </div>
+
+                    
+                            <!-- Step 3: Date & Time -->
+                            <div class="step d-none" id="step-3">
+                                <section class="container">
+                                    <article class="d-flex justify-content-between">
+                                        <div>
+                                            <button class="btn btn-sm text-secondary text-start p-0" onclick="goToStep(2)">
+                                                <p class="fw-semibold mb-0 small">Service selected<i class="bi bi-pencil-square ms-2"></i></p>
+                                                <span id="selectedService"></span></button>
+                                        </div>
+                                        <div class="text-end">
+                                            <button class="btn btn-sm text-secondary p-0" onclick="goToStep(2)">
+                                                <p class="fw-semibold mb-0 small">Parking<i class="bi bi-pencil-square ms-2"></i></p>
+                                                <span id="selectedParking"></span></button>
+                                        </div>
+                                    </article>
+                                    <hr>
+                                    <!-- Date Navigation -->
+                                    <article class="row justify-content-center align-items-center">
+                                        <div class="col text-start">
+                                            <button id="prevBtn" class="btn btn-outline-primary btn-lg shadow" onclick="changeDate(-1)">
+                                                <i class="bi bi-arrow-left"></i>
+                                            </button>
+                                        </div>
+                                        <div class="col-6 text-center position-relative">
+                                            <button id="selectedDate" class="btn fw-medium w-100 shadow rounded-4 opacity-10" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom" onclick="openDatePicker()"></button>
+                                            <input type="date" id="hiddenDatePicker"/>
+                                        </div>
+                                        <div class="col text-end">
+                                            <button id="nextBtn" class="btn btn-outline-primary btn-lg shadow" onclick="changeDate(1)">
+                                                <i class="bi bi-arrow-right"></i>
+                                            </button>
+                                        </div>
+                                    </article>
+                                    <hr>    
+                                    <!-- Time Slots -->
+                                    <article id="slotsContainer" class="row justify-content-start align-items-center"></article>
+                                </section>
+                            </div>
+                    
+                            <!-- Step 4: Confirmation -->
+                            <div class="step mx-3 d-none" id="step-4">
+                                <div class="mb-2">
+                                    <div class="d-flex justify-content-between align-items-start border-bottom">
+                                        <p><b>Contact Info</b></p> <button class="btn btn-sm text-secondary p-0" onclick="goToStep(1)"><i class="bi bi-pencil-square me-2"></i>Edit</button> 
+                                    </div>
+                                    <p><b class="bi bi-person me-3"></b><span id="confirmName"></span></p>
+                                    <p><i class="bi bi-telephone me-3"></i><span id="confirmPhone"></span></p>
+                                    <p><i class="bi bi-envelope me-3"></i><span id="confirmEmail"></span></p>
+
+                                    <span id=""></span>
+                                    <span id=""></span>
+                                </div>
+                                <hr>
+                                <div class="mb-2">
+                                    <div class="d-flex justify-content-between align-items-start border-bottom">
+                                        <p><b>Service</b></p> <button class="btn btn-sm text-secondary p-0" onclick="goToStep(2)"><i class="bi bi-pencil-square me-2"></i>Edit</button> 
+                                    </div>
+                                    <p><span id="confirmService"></span></p>
+                                    <p><b>Duration: </b></span> <span id="confirmDuration"></span></p>
+                                    <p><b>Parking required? </b></span> <span id="confirmParking"></span></p>
+                                </div>
+                                <hr>
+                                <div class="mb-2">
+                                    <div class="d-flex justify-content-between align-items-start border-bottom">
+                                        <p><b>Date & Time of Appointment</b></p> <button class="btn btn-sm text-secondary p-0" onclick="goToStep(3)"><i class="bi bi-pencil-square me-2"></i>Edit</button> 
+                                    </div>
+                                    <span id="confirmDateTime"></span>
+                                </div>
+                            </div>                
+                        </div>
+                        <div class="modal-footer">
+                            <div class="d-flex justify-content-between gap-3 w-100">
+                                <div class="col-4">
+                                    <button class="btn btn-outline-secondary w-100" id="prevStep" onclick="prevStep()">Back</button>
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-primary w-100" id="nextStep" onclick="nextStep()">Next</button>
+                                    <button class="btn btn-success w-100 d-none" type="submit" id="confirmBookingBtn" onclick="submitBooking()">Confirm Booking</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+  
+        </footer>
+        <!-- Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
+        <script>
+            let currentStep = 1;
+            const totalSteps = 4;
+            
+            document.addEventListener('DOMContentLoaded', () => {
+                showStep(1);
+            
+                // Add event listeners for validations
+                document.querySelectorAll('#step-1 input').forEach(input => {
+                    input.addEventListener('input', validateStep1);
+                });
+            
+                document.querySelectorAll('input[name="parking"]').forEach(radio => {
+                    radio.addEventListener('change', validateStep2);
+                });
+
+                
+            });
+            
+            function showStep(step) {
+                document.querySelectorAll('.step').forEach(el => el.classList.add('d-none'));
+                document.getElementById(`step-${step}`).classList.remove('d-none');
+
+                const titles = {
+                    1: 'Appointment Form',
+                    2: 'Service & Parking',
+                    3: 'Select Date & Time',
+                    4: 'Confirm Booking'
+                };
+
+                const progress = (step / totalSteps) * 100;
+                document.getElementById('progressBar').style.width = `${progress}%`;
+                document.getElementById('appHeadTitle').textContent = titles[step];
+
+                document.getElementById('prevStep').style.visibility = step === 1 ? 'hidden' : 'visible';
+
+                // ✅ Toggle buttons for final confirmation step
+                const nextBtn = document.getElementById("nextStep");
+                const confirmBtn = document.getElementById("confirmBookingBtn");
+
+                if (step === 4) {
+                    nextBtn.classList.add("d-none");
+                    confirmBtn.classList.remove("d-none");
+                } else {
+                    nextBtn.classList.remove("d-none");
+                    confirmBtn.classList.add("d-none");
+                }
+
+                currentStep = step;
+
+                // ✅ Step 3: update service/parking labels
+                if (step === 3) {
+                    const service = document.querySelector('.service-option.selected');
+                    const parking = document.querySelector('input[name="parking"]:checked');
+
+                    if (service) {
+                    document.getElementById('selectedService').textContent = service.innerText.trim();
+                    }
+                    if (parking) {
+                    document.getElementById('selectedParking').textContent = `Parking: ${parking.value}`;
+                    }
+                }
+
+                validateCurrentStep();
+
+console.log("Current Step:", step);
+console.log("Next button:", nextBtn.classList);
+console.log("Confirm button:", confirmBtn.classList);
+
+            }
+
+            
+            function nextStep() {
+                if (currentStep === 3) updateConfirmation();
+                if (currentStep < totalSteps) showStep(currentStep + 1);
+            }
+            
+            function prevStep() {
+                if (currentStep > 1) showStep(currentStep - 1);
+            }
+            
+            function goToStep(step) {
+    // If going back to Step 2 (Service & Parking) and date/time is already selected
+    if (step === 2 && window.selectedDateTime) {
+        const confirmedDateTime = window.selectedDateTime;
+        const confirmReset = confirm(
+            `Changing the service or parking requirement resets the date and time slots selected.\n\nYour current appointment date & time is:\n${confirmedDateTime}`
+        );
+
+        if (confirmReset) {
+            // Clear selected date/time and go to Step 2
+            window.selectedDateTime = null;
+            document.querySelectorAll(".time.selected").forEach(btn => btn.classList.remove("selected"));
+            validateStep3(); // disable Next on Step 3 if revisited
+        } else {
+            return; // Do not proceed to step 2 if user cancels
+        }
+    }
+
+    showStep(step);
+}
+
+            
+            // Validate Step 1
+            function validateStep1() {
+                const first = document.getElementById('firstName').value.trim();
+                const last = document.getElementById('lastName').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const valid = first && last && phone && email;
+                toggleNextButton(valid);
+            }
+            
+            // Validate Step 2
+            function validateStep2() {
+                const serviceSelected = document.querySelector('input[name="service"]:checked');
+                const parkingSelected = document.querySelector('input[name="parking"]:checked');
+                const durationSelected = document.querySelector('input[name="duration"]:checked');
+                const valid = serviceSelected && parkingSelected && durationSelected;
+                toggleNextButton(valid);
+            }
+            
+            // Validate Step 3 (replace this logic with your custom selector check)
+            function validateStep3() {
+                const valid = !!window.selectedDateTime; // Replace with actual logic
+                toggleNextButton(valid);
+            }
+            
+            function validateCurrentStep() {
+                if (currentStep === 1) return validateStep1();
+                if (currentStep === 2) return validateStep2();
+                if (currentStep === 3) return validateStep3();
+                toggleNextButton(true);
+            }
+            
+            // Enable/disable Next button
+            function toggleNextButton(enabled) {
+                document.getElementById('nextStep').disabled = !enabled;
+                document.getElementById('confirmBookingBtn').disabled = !enabled;
+            }
+            
+            // Confirm Booking Summary
+            function updateConfirmation() {
+                document.getElementById('confirmName').textContent = `${document.getElementById('firstName').value} ${document.getElementById('lastName').value}`;
+                document.getElementById('confirmPhone').textContent = document.getElementById('phone').value;
+                document.getElementById('confirmEmail').textContent = document.getElementById('email').value;
+            
+                const service = document.querySelector('.service-option.selected');
+                document.getElementById('confirmService').textContent = service ? service.innerText.trim() : 'None';
+            
+                const parking = document.querySelector('input[name="parking"]:checked');
+                document.getElementById('confirmParking').textContent = parking ? parking.value : 'Not selected';
+                document.getElementById('confirmDuration').textContent = `${window.selectedDuration} Minutes`;
+                document.getElementById('confirmDateTime').textContent = window.selectedDateTime || '[Selected date & time]';
+            }
+
+            function selectServiceRadio(container, inputId) {
+                document.querySelectorAll('.service-option').forEach(opt => {
+                    opt.classList.remove('bg-200', 'border-info', 'shadow', 'selected');
+                    opt.classList.add('bg-50');
+                    opt.querySelector('input[type="radio"]').checked = false;
+                });
+
+                container.classList.remove('bg-50');
+                container.classList.add('bg-200', 'border-info', 'shadow', 'selected');
+                document.getElementById(inputId).checked = true;
+
+                validateStep2();
+            }
+
+            function selectParkingRadio(container, inputId) {
+                document.querySelectorAll('.parking-option').forEach(opt => {
+                    opt.classList.remove('bg-200', 'border-info', 'shadow');
+                    opt.classList.add('bg-50');
+                    opt.querySelector('input[type="radio"]').checked = false;
+                });
+
+                container.classList.remove('bg-50');
+                container.classList.add('bg-200', 'border-info', 'shadow');
+                document.getElementById(inputId).checked = true;
+
+                validateStep2();
+            }
+
+            function selectDurationRadio(container, inputId) {
+                document.querySelectorAll('.duration-option').forEach(opt => {
+                    opt.classList.remove('bg-200', 'border-info', 'shadow');
+                    opt.classList.add('bg-50');
+                    opt.querySelector('input[type="radio"]').checked = false;
+                });
+
+                container.classList.remove('bg-50');
+                container.classList.add('bg-200', 'border-info', 'shadow');
+                document.getElementById(inputId).checked = true;
+
+                window.selectedDuration = parseInt(document.getElementById(inputId).value);
+                validateStep2();
+            }
+
+            function selectService(service) {
+                document.querySelectorAll('.service-option').forEach(el => el.classList.remove('selected'));
+                event.currentTarget.classList.add('selected');
+                validateStep2();
+            }
+
+            function selectTimeSlot(time) {
+                window.selectedDateTime = `${selectedDateString} at ${time}`; // selectedDateString should be the formatted date
+                validateStep3(); // Trigger validation so Next button is enabled
+            }
+
+
+            function submitBooking() {
+  const url = "https://script.google.com/macros/s/AKfycbwCy9E4EPMd5EqnXrDdwMN8Q_kc87eM4_4qlSWCX4r3jdt7_KSwx1syED6gDIvItZcG/exec"; 
+
+  const data = {
+    firstName: document.getElementById('firstName').value,
+    lastName: document.getElementById('lastName').value,
+    phone: document.getElementById('phone').value,
+    email: document.getElementById('email').value,
+    service: document.querySelector('.service-option.selected')?.innerText.trim(),
+    duration: window.selectedDuration,
+    parking: document.querySelector('input[name="parking"]:checked')?.value,
+    date: window.selectedDateString,
+    time: window.selectedDateTime?.split(" at ")[1]
+  };
+
+  fetch(url, {
+    method: "POST",
+    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+  .then(res => res.text())
+  .then(response => {
+    console.log("✅ Booking submitted:", response);
+    alert("Your appointment has been booked successfully!");
+    // Optionally reset the form or close modal here
+  })
+  .catch(error => {
+    console.error("❌ Booking failed:", error);
+    alert("Something went wrong. Please try again later.");
+  });
+}
+
+
+        </script>            
+            
+        <script>
+            // 📍 PHASE 1: Date Setup with Luxon (Toronto Time)
+            //1.1 Define Base Constants (Toronto Time)
+            const DateTime = luxon.DateTime;
+            const TORONTO_ZONE = "America/Toronto";
+            const dateInput = document.getElementById("hiddenDatePicker");
+
+            const today = DateTime.now().setZone(TORONTO_ZONE).startOf("day");
+            let currentDate = today;
+            const maxDate = today.plus({ months: 3 }).startOf("day");
+
+            // 📍 PHASE 2: Date Navigation + Display
+            // 2.1 — Create Format Helpers
+            function formatDisplayDate(date) {
+                const tomorrow = today.plus({ days: 1 });
+
+                if (date.hasSame(today, "day")) return `Today<br><small class="text-muted">${date.toFormat("ccc, MMM d")}</small>`;
+                if (date.hasSame(tomorrow, "day")) return `Tomorrow<br><small class="text-muted">${date.toFormat("ccc, MMM d")}</small>`;
+                return `${date.toFormat("MMMM d, yyyy")}<br><small class="text-muted">${date.toFormat("cccc")}</small>`;
+            }
+
+            function formatForInput(date) {
+            return date.toFormat("yyyy-MM-dd");
+            }
+
+            // 2.2 — Handle Date Change (Prev, Next)
+            function changeDate(offset) {
+                const newDate = currentDate.plus({ days: offset });
+
+                if (newDate < today || newDate > maxDate) return;
+
+                currentDate = newDate;
+                updateDateDisplay();
+            }
+
+            // 2.3 — Update Date Display + Button States
+            function updateDateDisplay() {
+                document.getElementById("selectedDate").innerHTML = formatDisplayDate(currentDate);
+
+                dateInput.min = formatForInput(today);
+                dateInput.max = formatForInput(maxDate);
+                dateInput.value = formatForInput(currentDate);
+                window.selectedDateString = currentDate.toFormat("cccc, MMMM d, yyyy");
+
+
+                document.getElementById("prevBtn").disabled = currentDate.hasSame(today, "day");
+                document.getElementById("nextBtn").disabled = currentDate.hasSame(maxDate, "day");
+
+                 // ✅ Reset selected time when the date changes
+                window.selectedDateTime = null;
+                validateStep3(); // revalidate to disable Next if needed
+
+                generateSlots();
+            }
+
+            // 📍 PHASE 3: Date Picker Integration + Validation
+            // 3.1 — Parse and Validate Picker Selection
+            function parseInputDate(value) {
+                return DateTime.fromISO(value, { zone: TORONTO_ZONE }).startOf("day");
+                }
+
+                document.getElementById("hiddenDatePicker").addEventListener("change", (e) => {
+                const inputValue = e.target.value;
+                const parsed = parseInputDate(inputValue);
+
+                if (!parsed.isValid) {
+                    currentDate = today;
+                    updateDateDisplay();
+                    return;
+                }
+
+                if (parsed < today) {
+                    currentDate = today;
+                    triggerShakeTooltip("Appointments cannot be in the past. Reset to <b>Today</b>.");
+                } else if (parsed > maxDate) {
+                    currentDate = maxDate;
+                    triggerShakeTooltip(`Appointments cannot exceed 3 months. Reset to <b>${maxDate.toFormat("ccc, MMM d")}</b>.`);
+                } else {
+                    currentDate = parsed;
+                }
+
+                updateDateDisplay();
+            });
+
+            function openDatePicker() {
+  console.log("Opening picker...");
+  if (typeof dateInput.showPicker === "function") {
+    dateInput.showPicker();
+  } else {
+    dateInput.focus();
+    setTimeout(() => dateInput.click(), 50);
+  }
+}
+
+
+            // 📍 PHASE 4: Tooltip + Shake Feedback
+            // 4.1 — Tooltip Feedback for Invalid Selection
+            function triggerShakeTooltip(message) {
+                const btn = document.getElementById("selectedDate");
+
+                btn.classList.add("shake");
+                if (navigator.vibrate) navigator.vibrate(200);
+
+                setTimeout(() => btn.classList.remove("shake"), 300);
+
+                btn.setAttribute("data-bs-toggle", "tooltip");
+                btn.setAttribute("data-bs-placement", "bottom");
+                btn.setAttribute("data-bs-html", "true");
+                btn.setAttribute("title", message);
+
+                bootstrap.Tooltip.getInstance(btn)?.dispose();
+                const tooltip = new bootstrap.Tooltip(btn);
+                tooltip.show();
+
+                setTimeout(() => tooltip.hide(), 3000);
+            }
+
+            // 📍 PHASE 5: Time Slot Generation
+            // 5.1 — Generate Time Slots with Booking Logic
+            const bookedSlots = ["09:30", "11:00", "14:30"]; // example
+
+            function generateSlots() {
+                const container = document.getElementById("slotsContainer");
+                container.innerHTML = "";
+
+                const isToday = currentDate.hasSame(today, "day");
+                const torontoNow = DateTime.now().setZone(TORONTO_ZONE);
+
+                const slots = [];
+
+                for (let hour = 8; hour <= 17; hour++) {
+                    for (let min = 0; min < 60; min += 30) {
+                    if (hour === 8 && min < 30) continue;
+                    if (hour === 17 && min > 30) continue;
+
+                    const time = currentDate.set({ hour, minute: min });
+                    const label = time.toFormat("HH:mm");
+
+                    const isPast = isToday && time <= torontoNow;
+                    const isBooked = bookedSlots.includes(label);
+
+                    slots.push({ label, isPast, isBooked });
+                    }
+                }
+
+                if (isToday && slots.every(s => s.isPast)) {
+                    container.innerHTML = `
+                    <div class="col-12 text-center text-muted my-3">
+                        <i class="bi bi-clock-slash"></i> No available time slots for today.<br>
+                        <button class="btn btn-outline-primary mt-2" onclick="changeDate(1)">Check Tomorrow</button>
+                    </div>`;
+                    return;
+                }
+
+                for (const slot of slots) {
+                    const div = document.createElement("div");
+                    div.className = "col-3 py-2";
+
+                    const btn = document.createElement("button");
+                    btn.className = "btn w-100 time";
+
+                    if (slot.isPast) {
+                    btn.classList.add("btn-outline-secondary");
+                    btn.disabled = true;
+                    btn.style.cursor = "not-allowed";
+                    btn.textContent = slot.label;
+                    btn.setAttribute("title", "Time passed");
+                    } else if (slot.isBooked) {
+                    btn.classList.add("btn-secondary");
+                    btn.disabled = true;
+                    btn.style.cursor = "not-allowed";
+                    btn.textContent = slot.label;
+                    btn.setAttribute("title", "This time slot was already booked");
+                    } else {
+                    btn.classList.add("btn-outline-success");
+                    btn.textContent = slot.label;
+                    btn.onclick = () => {
+                        document.querySelectorAll(".time").forEach(b => b.classList.remove("selected"));
+                        btn.classList.add("selected");
+
+                        // ✅ Save full datetime string for confirmation
+                        window.selectedDateTime = `${window.selectedDateString} at ${slot.label}`;
+                        validateStep3(); // ✅ enable Next button
+                    };
+
+                    }
+
+                    div.appendChild(btn);
+                    container.appendChild(div);
+                }
+            }
+
+            // ✅ FINAL STEP: Initialize
+            // 6.1 — Initialize Everything on Page Load
+            updateDateDisplay();
+
+
+
+        </script>
+    </body>
+</html>

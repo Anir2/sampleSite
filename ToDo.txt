@@ -1,0 +1,14 @@
+*To Remove .html in the URL*
+    - Login to Hosting 
+    - Add the Following Code to the .htaccess
+        RewriteEngine On
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteRule ^([a-zA-Z0-9_-]+)/?$ $1.html [L]
+*****************************************************************
+
+**
+Attributes:
+
+Massage Therapy - <a href="https://www.freepik.com/free-photo/closeup-man-having-back-massage-spa-treatment-wellness-center_25630615.htm#fromView=image_search_similar&page=1&position=33&uuid=635f8cce-50a3-45e7-83f0-c5e6941ac46a&query=massage+therapy">Image by Drazen Zigic on Freepik</a>
+Herbal - <a href="https://www.freepik.com/free-ai-image/fresh-herb-seasoning-rustic-wood-bowl-generated-by-ai_40964133.htm#fromView=search&page=1&position=17&uuid=259557ad-88df-463f-b333-55a76d0be5c4&query=Herbal+Medicine">Image by vecstock on Freepik</a>

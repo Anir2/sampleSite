@@ -1,0 +1,18 @@
+{
+  "name": "healingplus",
+  "version": "1.0.0",
+  "description": "A modern, responsive website was designed and developed for HealingPLUS Health Centre, a wellness clinic specializing in acupuncture, traditional Chinese herbal therapy, and registered massage therapy (RMT). With over 25 years of clinical experience, the clinic needed a clean, calming, and informative online presence to reflect its expertise and holistic approach to health. This project involved close collaboration with clients to translate their values and services into a user-friendly web experience. The site highlights a wide range of health conditions treated, offers detailed information about herbal and massage therapies, and makes it easy for patients to book appointments or learn more.",
+  "scripts": {
+    "lite": "lite-server",
+    "start": "npm run lite"
+  },
+  "author": "Maniraj G Parthasarathy | UX Designer & Front-end Web Developer",
+  "license": "ISC",
+  "devDependencies": {
+    "lite-server": "^2.6.1"
+  },
+  "server": {
+    "baseDir": "./",
+    "directory": true
+  }
+}

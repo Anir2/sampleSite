@@ -1,0 +1,40 @@
+.bg-50  { background-color: #f0f7ff; }
+.bg-100 { background-color: #e0effe; }
+.bg-200 { background-color: #b9defe; }
+.bg-300 { background-color: #60b8fd; }
+.bg-400 { background-color: #36a7fa; }
+.bg-500 { background-color: #0c8ceb; }
+.bg-600 { background-color: #006ec9; }
+.bg-700 { background-color: #0156a3; }
+.bg-800 { background-color: #064a86; }
+.bg-900 { background-color: #0b3e6f; }
+.bg-950 { background-color: #07274a; }
+.bg-grad { background: linear-gradient(135deg, #0e1a3c, #0e1a3c, #013aac);}
+
+.txt-50  { color: #f0f7ff; }
+.txt-100 { color: #e0effe; }
+.txt-200 { color: #b9defe; }
+.txt-300 { color: #60b8fd; }
+.txt-400 { color: #36a7fa; }
+.txt-500 { color: #0c8ceb; }
+.txt-600 { color: #006ec9; }
+.txt-700 { color: #0156a3; }
+.txt-800 { color: #064a86; }
+.txt-900 { color: #0b3e6f; }
+.txt-950 { color: #07274a; }
+
+
+
+body { font-family: "Roboto", sans-serif; }
+
+/* .nav-link { color: #064a86;}
+.nav-link.active { color: #07274a !important; font-weight: bold; } */
+
+.zoomImg img { transition: transform 1s ease; }
+  
+.zoomImg:hover img { transform: scale(1.05); }
+
+.conWeTreat { background-image: url('../medias/conditions.jpg'); background-size: cover; }
+
+.st0{fill:#FFC500;}
+.st1{fill:#FFFFFF;}
